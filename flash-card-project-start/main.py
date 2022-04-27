@@ -1,16 +1,20 @@
 from tkinter import *
+
+import pandas
 import pandas as pd
 import random
 
 BACKGROUND_COLOR = "#B1DDC6"
 
 card ={}
-
-data = pd.read_csv("../flash-card-project-start/data/french_words.csv")
-
-df = pd.DataFrame(data)
-
-dict_data = df.to_dict(orient="records")
+dict_data = {}
+try:
+ data = pd.read_csv("../flash-card-project-start/data/words_to_learn.csv")
+except FileNotFoundError:
+    original_data = pd.read_csv("../flash-card-project-start/data/french_words.csv")
+    dict_data = original_data.to_dict(orient="records")
+else:
+    dict_data = data.to_dict(orient="records")
 
 
 def next_card():
@@ -25,6 +29,8 @@ def next_card():
 
 def is_known():
     dict_data.remove(card)
+    data = pandas.DataFrame(dict_data)
+    data.to_csv("./data/words_to_learn.csv")
     next_card()
 
 
@@ -67,7 +73,7 @@ card_word = canvas.create_text(400, 263, text="", font=("Ariel", 40, "italic"))
 
 
 
-button_1 = Button(image=right_button, highlightthickness=0, command=next_card)
+button_1 = Button(image=right_button, highlightthickness=0, command=is_known)
 button_1.grid(column=2, row=2)
 
 button_2 = Button(image=wrong_button, command=next_card, highlightthickness= 0)
